@@ -1,0 +1,43 @@
+import cgi
+
+VIDEO_URL = 'http://www.traileraddict.com/js/flash/fv-secure.php?tid=%s&token=%s'
+
+####################################################################################################
+def MediaObjectsForURL(url):
+
+	return [
+		MediaObject(
+			video_resolution = '720',
+			parts = [PartObject(key=Callback(PlayVideo, url=url, res='hd'))]
+		),
+		MediaObject(
+			video_resolution = '480',
+			parts = [PartObject(key=Callback(PlayVideo, url=url, res='sd'))]
+		)
+	]
+
+####################################################################################################
+def PlayVideo(url, res):
+
+	url = 'http://www.traileraddict.com/%s' % (url.split('://')[-1])
+
+	html = HTML.ElementFromURL(url, cacheTime=CACHE_1MONTH)
+	video_id = html.xpath('//meta[@name="twitter:player"]/@content')
+
+	if len(video_id) < 1:
+		raise Ex.MediaNotAvailable
+
+	video_id = video_id[0].split('/')[-1]
+	token = Hash.MD5(video_id)[2:7]
+
+	details_page = HTTP.Request(VIDEO_URL % (video_id, token)).content.decode('latin-1')
+	details = cgi.parse_qs(details_page)
+
+	if 'hdurl' in details and len(details['hdurl']) > 0 and details['hdurl'][0].startswith('http') and res == 'hd':
+		video_url = details['hdurl'][0]
+	elif 'fileurl' in details and len(details['fileurl']) > 0 and details['fileurl'][0].startswith('http'):
+		video_url = details['fileurl'][0]
+	else:
+		raise Ex.MediaNotAvailable
+
+	return Redirect(video_url)
