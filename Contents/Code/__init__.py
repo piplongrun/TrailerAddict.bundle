@@ -2,9 +2,21 @@ API_URL = 'http://api.traileraddict.com/?imdb=%s' # %s = imdb id
 MOVIE_URL = 'http://www.traileraddict.com/%s' # %s = slug or relative url
 
 POST_URL = 'http://www.traileraddict.com/ajax/film_popular.php'
-POST_BODY = 'page=1&filmid=%s' # %s = traileraddict movie id
+POST_BODY = 'page=%d&filmid=%s' # %d = page, %s = traileraddict movie id
 
 RE_TA_MOVIE_ID = Regex('filmpop\(\d+,(\d+)\)')
+
+TYPE_ORDER = ['trailer', 'feature_trailer', 'theatrical_trailer', 'behind_the_scenes', 'interview', 'music_video', 'deleted_scene']
+TYPE_MAP = {
+	'trailer': TrailerObject,
+	'feature_trailer': TrailerObject,
+	'theatrical_trailer': TrailerObject,
+	'behind_the_scenes': BehindTheScenesObject,
+	'interview': InterviewObject,
+#	'music_video': MusicVideoObject,
+	'music_video': SceneOrSampleObject,
+	'deleted_scene': DeletedSceneObject
+}
 
 ####################################################################################################
 def Start():
@@ -88,63 +100,65 @@ class TrailerAddictAgent(Agent.Movies):
 	def update(self, metadata, media, lang):
 
 		ta_movie_id = Dict['movies'][metadata.id]['ta_movie_id']
+		extras = []
 
-		try:
-			page = HTTP.Request(POST_URL, data=POST_BODY % (ta_movie_id), sleep=2.0).content # Only HTTP.Request supports a POST body
+		for page in range(1,6):
+
+			try:
+				page = HTTP.Request(POST_URL, data=POST_BODY % (page, ta_movie_id), sleep=2.0).content # Only HTTP.Request supports a POST body
+			except:
+				break
+
 			html = HTML.ElementFromString(page)
-		except:
-			return None
 
-		for video in html.xpath('//a'):
+			if len(html.xpath('//a')) < 1:
+				break
 
-			title = video.text
-			url = video.get('href')
+			for video in html.xpath('//a'):
 
-			if 'tv spot' in title.lower() or title.lower().startswith('spot ') or title.lower().startswith('spot-') or title.lower().endswith(' spot'):
-				continue
+				title = video.text
+				url = video.get('href')
 
-			if 'promo' in title.lower():
-				continue
+				# Trailers
+				if title.lower() == 'trailer':
+					extra_type = 'trailer'
+				elif title.lower() == 'feature trailer':
+					extra_type = 'feature_trailer'
+				elif title.lower() == 'theatrical trailer':
+					extra_type = 'theatrical_trailer'
 
-			if 'japanese ' in title.lower() or 'asia trailer' in title.lower():
-				continue
+				# Behind the scenes / Featurette
+				elif 'behind the scenes' in title.lower() or 'featurette' in title.lower():
+					extra_type = 'behind_the_scenes'
 
-			if 'trailer' in title.lower():
-				extra = TrailerObject(
-					url = 'ta://%s' % (url.lstrip('/')),
-					title = title,
-					thumb = Dict['movies'][metadata.id]['poster']
-				)
+				# Interview
+				elif 'interview' in title.lower():
+					extra_type = 'interview'
 
-			elif 'interview' in title.lower():
-				if title.lower().startswith('interview'):
-					title = title.split('nterview - ')[-1].split('nterview- ')[-1]
+					if title.lower().startswith('interview') or title.lower().startswith('generic interview'):
+						title = title.split('nterview - ')[-1].split('nterview- ')[-1]
 
-				extra = InterviewObject(
-					url = 'ta://%s' % (url.lstrip('/')),
-					title = title,
-					thumb = Dict['movies'][metadata.id]['poster']
-				)
+				# Music video
+				elif 'music video' in title.lower():
+					extra_type = 'music_video'
 
-			elif 'behind the scenes' in title.lower() or 'featurette' in title.lower():
-				extra = BehindTheScenesObject(
-					url = 'ta://%s' % (url.lstrip('/')),
-					title = title,
-					thumb = Dict['movies'][metadata.id]['poster']
-				)
+				# Deleted scene
+				elif 'deleted scene' in title.lower():
+					extra_type = 'deleted_scene'
 
-			elif 'deleted scene' in title.lower():
-				extra = DeletedSceneObject(
-					url = 'ta://%s' % (url.lstrip('/')),
-					title = title,
-					thumb = Dict['movies'][metadata.id]['poster']
-				)
+				else:
+					continue
 
-			else:
-				extra = SceneOrSampleObject(
-					url = 'ta://%s' % (url.lstrip('/')),
-					title = title,
-					thumb = Dict['movies'][metadata.id]['poster']
-				)
+				extras.append({
+					'type': extra_type,
+					'extra': TYPE_MAP[extra_type](
+						url = 'ta://%s' % (url.lstrip('/')),
+						title = title,
+						thumb = Dict['movies'][metadata.id]['poster']
+					)
+				})
 
-			metadata.extras.add(extra)
+		extras.sort(key=lambda e: TYPE_ORDER.index(e['type']))
+
+		for extra in extras:
+			metadata.extras.add(extra['extra'])
