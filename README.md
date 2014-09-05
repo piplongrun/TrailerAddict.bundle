@@ -10,7 +10,9 @@ A Plex movie library with the Freebase agent set as primary agent and language s
 
 Installation
 ------------
-To install this agent, follow the instructions as described in the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)"
+- To install this agent, follow the instructions as described in the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)"
+- Activate the agent in Plex Media Server settings
+- Refresh your movie library
 
 Limitations
 -----------
