@@ -56,7 +56,7 @@ class TrailerAddictAgent(Agent.Movies):
 			)
 
 			if not imdb_id:
-				Log("*** Could not find IMDb id for movie with The Movie Database id: %s" % (media.primary_metadata.id))
+				Log("*** Could not find IMDb id for movie with The Movie Database id: %s ***" % (media.primary_metadata.id))
 				return None
 
 		# If we already have the required traileraddict movie id
