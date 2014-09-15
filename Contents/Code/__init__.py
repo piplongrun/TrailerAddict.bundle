@@ -33,11 +33,31 @@ class TrailerAddictAgent(Agent.Movies):
 	name = 'Trailer Addict'
 	languages = [Locale.Language.English]
 	primary_provider = False
-	contributes_to = ['com.plexapp.agents.imdb']
+	contributes_to = [
+		'com.plexapp.agents.imdb',
+		'com.plexapp.agents.themoviedb'
+	]
 
 	def search(self, results, media, lang):
 
-		imdb_id = media.primary_metadata.id
+		if media.primary_agent == 'com.plexapp.agents.imdb':
+
+			imdb_id = media.primary_metadata.id
+
+		elif media.primary_agent == 'com.plexapp.agents.themoviedb':
+
+			# Get the IMDb id from the Movie Database Agent
+			imdb_id = Core.messaging.call_external_function(
+				'com.plexapp.agents.themoviedb',
+				'MessageKit:GetImdbId',
+				kwargs = dict(
+					tmdb_id = media.primary_metadata.id
+				)
+			)
+
+			if not imdb_id:
+				Log("*** Could not find IMDb id for movie with The Movie Database id: %s ***" % (media.primary_metadata.id))
+				return None
 
 		# If we already have the required traileraddict movie id
 		if imdb_id in Dict['movies']:
