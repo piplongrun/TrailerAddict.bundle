@@ -4,7 +4,7 @@ This agent adds trailers, behind the scenes, interviews and other extras to your
 
 Requirements
 ------------
-A Plex movie library with the Freebase agent set as primary agent and language set to English.
+A Plex movie library with the Freebase or The Movie Database agent set as primary agent and language set to English.
 
 ![Agent Settings in Plex](http://s10.postimg.org/s5upa306x/agent_sttngs.jpg)
 
