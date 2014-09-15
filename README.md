@@ -16,7 +16,6 @@ Installation
 
 Limitations
 -----------
-- The current version of this agent works with Freebase only;
 - Due to the setup and contents of the source website, we can't tell FLVs from MP4s, this requires the Plex Media Server to make use of transcoding in some cases;
 - The source website does not offer preview images for the videos.
 
