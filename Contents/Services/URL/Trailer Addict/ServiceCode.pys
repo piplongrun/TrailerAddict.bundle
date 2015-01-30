@@ -1,6 +1,6 @@
 import cgi
 
-VIDEO_URL = 'http://www.traileraddict.com/js/flash/fv-secure.php?tid=%s&token=%s'
+VIDEO_URL = 'http://v.traileraddict.com/js/flash/fv-secure.php?tid=%s&token=%s'
 
 ####################################################################################################
 def MediaObjectsForURL(url):
@@ -28,7 +28,14 @@ def PlayVideo(url, res):
 		raise Ex.MediaNotAvailable
 
 	video_id = video_id[0].split('/')[-1]
-	token = Hash.MD5(video_id)[2:7]
+	hash_string = ''
+	digits = list(video_id)
+
+	for digit in digits:
+		x = int(digit)
+		hash_string = hash_string + 'abcdefghijklmnopqrstuvwyxz'[x:x+1]
+
+	token = Hash.MD5('%s%s' % (hash_string, video_id))[2:7]
 
 	details_page = HTTP.Request(VIDEO_URL % (video_id, token)).content.decode('latin-1')
 	details = cgi.parse_qs(details_page)
