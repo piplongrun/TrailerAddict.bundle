@@ -1,6 +1,5 @@
-import cgi
-
-VIDEO_URL = 'http://v.traileraddict.com/js/flash/fv-secure.php?tid=%s&token=%s'
+import unwise
+RE_FILES = Regex("file:'([^']+)'")
 
 ####################################################################################################
 def MediaObjectsForURL(url):
@@ -8,43 +7,35 @@ def MediaObjectsForURL(url):
 	return [
 		MediaObject(
 			video_resolution = '720',
-			parts = [PartObject(key=Callback(PlayVideo, url=url, res='hd'))]
-		),
-		MediaObject(
-			video_resolution = '480',
-			parts = [PartObject(key=Callback(PlayVideo, url=url, res='sd'))]
+			parts = [
+				PartObject(key=Callback(PlayVideo, url=url))
+			]
 		)
 	]
 
 ####################################################################################################
-def PlayVideo(url, res):
+def PlayVideo(url, **kwargs):
 
 	url = 'http://www.traileraddict.com/%s' % (url.split('://')[-1])
 
 	html = HTML.ElementFromURL(url, cacheTime=CACHE_1MONTH)
-	video_id = html.xpath('//meta[@name="twitter:player"]/@content')
+	video_url = html.xpath('//meta[@name="twitter:player"]/@content')
 
-	if len(video_id) < 1:
+	if len(video_url) < 1:
 		raise Ex.MediaNotAvailable
 
-	video_id = video_id[0].split('/')[-1]
-	hash_string = ''
-	digits = list(video_id)
+	data = HTTP.Request(video_url[0]).content
+	data = unwise.unwise_process(data)
+	files = RE_FILES.findall(data)
 
-	for digit in digits:
-		x = int(digit)
-		hash_string = hash_string + 'abcdefghijklmnopqrstuvwyxz'[x:x+1]
+	if len(files) < 1:
+		Log('Regex failed...')
+		return None
 
-	token = Hash.MD5('%s%s' % (hash_string, video_id))[2:7]
+	for file in files:
+		Log(file)
 
-	details_page = HTTP.Request(VIDEO_URL % (video_id, token)).content.decode('latin-1')
-	details = cgi.parse_qs(details_page)
+		if '-hd' in file:
+			return Redirect(file)
 
-	if 'hdurl' in details and len(details['hdurl']) > 0 and details['hdurl'][0].startswith('http') and res == 'hd':
-		video_url = details['hdurl'][0]
-	elif 'fileurl' in details and len(details['fileurl']) > 0 and details['fileurl'][0].startswith('http'):
-		video_url = details['fileurl'][0]
-	else:
-		raise Ex.MediaNotAvailable
-
-	return Redirect(video_url)
+	return Redirect(files[0])
