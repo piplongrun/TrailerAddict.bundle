@@ -1,7 +1,7 @@
 API_URL = 'http://api.traileraddict.com/?imdb=%s' # %s = imdb id
 MOVIE_URL = 'http://www.traileraddict.com/%s' # %s = slug or relative url
 
-POST_URL = 'http://www.traileraddict.com/ajax/film_popular.php'
+POST_URL = 'http://www.traileraddict.com/ajax/film_all.php'
 POST_BODY = 'page=%d&filmid=%s' # %d = page, %s = traileraddict movie id
 
 RE_TA_MOVIE_ID = Regex('filmpop\(\d+,(\d+)\)')
