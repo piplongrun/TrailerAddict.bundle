@@ -33,7 +33,6 @@ def PlayVideo(url, **kwargs):
 		return None
 
 	for file in files:
-		Log(file)
 
 		if '-hd' in file:
 			return Redirect(file)
