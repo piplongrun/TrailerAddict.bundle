@@ -17,7 +17,7 @@ TYPE_MAP = {
 ####################################################################################################
 def Start():
 
-	HTTP.CacheTime = 0
+	HTTP.CacheTime = CACHE_1WEEK
 
 	if not 'movies' in Dict:
 		Dict['movies'] = {}
