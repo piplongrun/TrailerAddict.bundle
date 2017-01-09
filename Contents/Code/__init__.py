@@ -1,10 +1,7 @@
-API_URL = 'http://api.traileraddict.com/?imdb=%s' # %s = imdb id
-MOVIE_URL = 'http://www.traileraddict.com/%s' # %s = slug or relative url
+API_URL = 'https://tadata.me/imdb2ta/?imdb_id=%s' # %s = imdb id
 
-POST_URL = 'http://www.traileraddict.com/ajax/film_all.php'
-POST_BODY = 'page=%d&filmid=%s' # %d = page, %s = traileraddict movie id
-
-RE_TA_MOVIE_ID = Regex('filmpop\(\d+,(\d+)\)')
+POST_URL = 'https://www.traileraddict.com/ajax/film_popular.php'
+POST_BODY = 'page=%d&filmid=%s' # %d = page, %s = Trailer Addict movie id
 
 TYPE_ORDER = ['trailer', 'feature_trailer', 'theatrical_trailer', 'behind_the_scenes', 'interview', 'music_video', 'deleted_scene']
 TYPE_MAP = {
@@ -13,15 +10,14 @@ TYPE_MAP = {
 	'theatrical_trailer': TrailerObject,
 	'behind_the_scenes': BehindTheScenesObject,
 	'interview': InterviewObject,
-#	'music_video': MusicVideoObject,
-	'music_video': SceneOrSampleObject,
+	'music_video': MusicVideoObject,
 	'deleted_scene': DeletedSceneObject
 }
 
 ####################################################################################################
 def Start():
 
-	HTTP.CacheTime = CACHE_1WEEK
+	HTTP.CacheTime = 0
 
 	if not 'movies' in Dict:
 		Dict['movies'] = {}
@@ -59,7 +55,7 @@ class TrailerAddictAgent(Agent.Movies):
 				Log("*** Could not find IMDb id for movie with The Movie Database id: %s ***" % (media.primary_metadata.id))
 				return None
 
-		# If we already have the required traileraddict movie id
+		# If we already have the required Trailer Addict movie id
 		if imdb_id in Dict['movies']:
 
 			Log("*** We've already got a Trailer Addict id: %s ***" % (Dict['movies'][imdb_id]['ta_movie_id']))
@@ -69,46 +65,34 @@ class TrailerAddictAgent(Agent.Movies):
 				score = 100
 			))
 
-		# If not, lookup the traileraddict movie id
+		# If not, lookup the Trailer Addict movie id
 		else:
 
 			try:
-				xml = XML.ElementFromURL(API_URL % (imdb_id.strip('t')), sleep=2.0)
+				json_obj = JSON.ObjectFromURL(API_URL % (imdb_id), sleep=2.0)
 			except:
 				return None
 
-			link = xml.xpath('//link/text()')
-
-			if len(link) < 1:
+			if 'error' in json_obj:
+				Log('*** An error occurred: %s' % (json_obj['error']))
 				return None
 
-			slug = link[0].split('/')[3]
-
-			try:
-				html = HTML.ElementFromURL(MOVIE_URL % (slug), sleep=2.0)
-			except:
-				return None
-
-			script = html.xpath('//script[contains(., "filmpop(")]/text()')
-
-			if len(script) < 1:
-				return None
-
-			ta_movie_id = RE_TA_MOVIE_ID.search(script[0])
+			ta_movie_id = json_obj['ta_id']
 
 			if not ta_movie_id:
 				return None
 
+			html = HTML.ElementFromURL(json_obj['url'])
 			poster = html.xpath('//meta[@property="og:image"]/@content')
 
 			if len(poster) < 1:
 				poster = None
 			else:
-				poster = 'http://%s' % (poster[0].split('//')[-1])
+				poster = 'https://%s' % (poster[0].split('//')[-1])
 
-			# Store the traileraddict movie id and poster
+			# Store the Trailer Addict movie id and poster
 			Dict['movies'][imdb_id] = {}
-			Dict['movies'][imdb_id]['ta_movie_id'] = ta_movie_id.group(1)
+			Dict['movies'][imdb_id]['ta_movie_id'] = ta_movie_id
 			Dict['movies'][imdb_id]['poster'] = poster
 			Dict.Save()
 
@@ -122,7 +106,7 @@ class TrailerAddictAgent(Agent.Movies):
 		ta_movie_id = Dict['movies'][metadata.id]['ta_movie_id']
 		extras = []
 
-		for page in range(1,6):
+		for page in range(1,2):
 
 			try:
 				page = HTTP.Request(POST_URL, data=POST_BODY % (page, ta_movie_id), sleep=2.0).content # Only HTTP.Request supports a POST body
