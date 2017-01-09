@@ -16,7 +16,7 @@ def MediaObjectsForURL(url):
 ####################################################################################################
 def PlayVideo(url, **kwargs):
 
-	url = 'http://www.traileraddict.com/%s' % (url.split('://')[-1])
+	url = 'https://www.traileraddict.com/%s' % (url.split('://')[-1])
 
 	html = HTML.ElementFromURL(url, cacheTime=CACHE_1MONTH)
 	video_url = html.xpath('//meta[@name="twitter:player"]/@content')
