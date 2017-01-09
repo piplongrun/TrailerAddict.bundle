@@ -26,7 +26,7 @@ def Start():
 class TrailerAddictAgent(Agent.Movies):
 
 	name = 'Trailer Addict'
-	languages = [Locale.Language.English]
+	languages = [Locale.Language.NoLanguage]
 	primary_provider = False
 	contributes_to = [
 		'com.plexapp.agents.imdb',
