@@ -3,14 +3,13 @@ API_URL = 'https://tadata.me/imdb2ta/?imdb_id=%s' # %s = imdb id
 POST_URL = 'https://www.traileraddict.com/ajax/film_popular.php'
 POST_BODY = 'page=%d&filmid=%s' # %d = page, %s = Trailer Addict movie id
 
-TYPE_ORDER = ['trailer', 'feature_trailer', 'theatrical_trailer', 'behind_the_scenes', 'interview', 'music_video', 'deleted_scene']
+TYPE_ORDER = ['trailer', 'feature_trailer', 'theatrical_trailer', 'behind_the_scenes', 'interview', 'deleted_scene']
 TYPE_MAP = {
 	'trailer': TrailerObject,
 	'feature_trailer': TrailerObject,
 	'theatrical_trailer': TrailerObject,
 	'behind_the_scenes': BehindTheScenesObject,
 	'interview': InterviewObject,
-	'music_video': MusicVideoObject,
 	'deleted_scene': DeletedSceneObject
 }
 
