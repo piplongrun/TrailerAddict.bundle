@@ -11,7 +11,9 @@ A Plex movie library with the _Plex Movie_ agent or _The Movie Database_ agent s
 
 How do I install TrailerAddict?
 -------------------------------
-See the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)" over at the Plex support website.
+See the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)" over at the Plex support website. Don't forget to activate the agent in Settings > Server > Agents after installing.
+
+I will add the agent to the Unsupported AppStore if it turns out to be stable enough.
 
 Where do I download TrailerAddict?
 ----------------------------------
@@ -19,6 +21,7 @@ You can download the latest copy of the agent from Github: [releases](https://gi
 
 Limitations and Known Issues
 ----------------------------
+ - Due to not being able to grab certain data directly I had to build a small API that converts IMDb ids to TrailerAddict ids. This API is still a bit slow due to a number of http requests it has to do. Lots of requests are cached, so the more the agent gets used, the faster it will become.
  - Due to the setup and contents of the source website, we can't tell FLVs from MP4s, this requires the Plex Media Server to make use of transcoding in some cases;
  - The source website does not offer preview images for the videos.
 
