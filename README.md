@@ -1,22 +1,22 @@
-TrailerAddict
-=============
+Trailer Addict
+==============
 
-What is TrailerAddict?
-----------------------
-TrailerAddict is a metadata agent for Plex Media Server that tries to find trailers, interviews and behind the scenes videos for your movie library.
+What is Trailer Addict?
+-----------------------
+Trailer Addict is a metadata agent for Plex Media Server that tries to find trailers, interviews and behind the scenes videos for your movie library.
 
 Requirements
 ------------
 A Plex movie library with the _Plex Movie_ agent or _The Movie Database_ agent set as primary agent.
 
-How do I install TrailerAddict?
--------------------------------
+How do I install Trailer Addict?
+--------------------------------
 See the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)" over at the Plex support website. Don't forget to activate the agent in Settings > Server > Agents after installing.
 
 I will add the agent to the Unsupported AppStore if it turns out to be stable enough.
 
-Where do I download TrailerAddict?
-----------------------------------
+Where do I download Trailer Addict?
+-----------------------------------
 You can download the latest copy of the agent from Github: [releases](https://github.com/piplongrun/TrailerAddict.bundle/releases)
 
 Limitations and Known Issues
