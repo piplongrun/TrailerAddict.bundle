@@ -1,5 +1,5 @@
 import unwise
-RE_FILES = Regex("file:'([^']+)'")
+RE_FILES = Regex("file: *'([^']+)'")
 
 ####################################################################################################
 def MediaObjectsForURL(url):
