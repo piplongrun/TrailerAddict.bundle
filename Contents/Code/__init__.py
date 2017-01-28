@@ -141,10 +141,6 @@ class TrailerAddictAgent(Agent.Movies):
 					if title.lower().startswith('interview') or title.lower().startswith('generic interview'):
 						title = title.split('nterview - ')[-1].split('nterview- ')[-1]
 
-				# Music video
-				elif 'music video' in title.lower():
-					extra_type = 'music_video'
-
 				# Deleted scene
 				elif 'deleted scene' in title.lower():
 					extra_type = 'deleted_scene'
