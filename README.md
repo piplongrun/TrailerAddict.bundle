@@ -13,6 +13,7 @@ A Plex movie library with the _Plex Movie_ agent or _The Movie Database_ agent s
 How do I install Trailer Addict?
 --------------------------------
 You can install Trailer Addict:
+
  - From within the Unsupported App Store, or:
  - Manually: See the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)" over at the Plex support website.
 
