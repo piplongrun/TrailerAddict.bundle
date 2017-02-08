@@ -1,4 +1,5 @@
 RE_FILES = Regex("file: *'([^']+)'")
+UNAVAILABLE_URL = 'https://tadata.me/imdb2ta/unavailable.mp4'
 
 ####################################################################################################
 def MediaObjectsForURL(url):
@@ -29,5 +30,7 @@ def PlayVideo(url, **kwargs):
 	if len(files) < 1:
 		Log('Regex failed...')
 		return None
-
-	return Redirect(files[-1])
+	elif not '.flv' in files[-1] or not '.mp4' in files[-1]:
+		return Redirect(UNAVAILABLE_URL)
+	else:
+		return Redirect(files[-1])
