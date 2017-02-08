@@ -6,7 +6,12 @@ def MediaObjectsForURL(url):
 
 	return [
 		MediaObject(
+			container = Container.MP4,
+			video_codec = VideoCodec.H264,
 			video_resolution = '720',
+			audio_codec = AudioCodec.AAC,
+			audio_channels = 2,
+			optimized_for_streaming = True,
 			parts = [
 				PartObject(key=Callback(PlayVideo, url=url))
 			]
@@ -30,7 +35,7 @@ def PlayVideo(url, **kwargs):
 	if len(files) < 1:
 		Log('Regex failed...')
 		return None
-	elif not '.flv' in files[-1] or not '.mp4' in files[-1]:
+	elif not '.mp4' in files[-1]:
 		return Redirect(UNAVAILABLE_URL)
 	else:
 		return Redirect(files[-1])
