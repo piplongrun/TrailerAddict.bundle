@@ -70,6 +70,7 @@ class TrailerAddictAgent(Agent.Movies):
 			try:
 				json_obj = JSON.ObjectFromURL(API_URL % (imdb_id), sleep=2.0)
 			except:
+				Log("*** Failed retrieving data from %s"  % (API_URL % (imdb_id)))
 				return None
 
 			if 'error' in json_obj:
