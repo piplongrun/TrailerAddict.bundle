@@ -1,6 +1,6 @@
 Trailer Addict
 ==============
-<img src="https://img.shields.io/github/release/piplongrun/TrailerAddict.bundle.png?style=flat-square"> <img src="https://img.shields.io/github/downloads/piplongrun/TrailerAddict.bundle/total.png?style=flat-square">
+<img src="https://img.shields.io/github/release/piplongrun/TrailerAddict.bundle.png?style=flat-square">
 
 What is Trailer Addict?
 -----------------------
@@ -14,10 +14,10 @@ How do I install Trailer Addict?
 --------------------------------
 You can install Trailer Addict:
 
- - From within the Unsupported App Store, or:
+ - From within the Unsupported AppStore, or:
  - Manually: See the support article "[How do I manually install a channel?](https://support.plex.tv/hc/en-us/articles/201187656-How-do-I-manually-install-a-channel-)" over at the Plex support website.
 
-Don't forget to activate the agent in Settings > Server > Agents after installing.
+Don't forget to activate the agent in *Settings* > *Server* > *Agents* after installing.
 
 Where do I download Trailer Addict?
 -----------------------------------
