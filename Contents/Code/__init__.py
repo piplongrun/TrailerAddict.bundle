@@ -1,3 +1,4 @@
+VERSION = '1.7.1'
 API_URL = 'https://tadata.me/imdb2ta/%s' # %s = imdb id
 
 POST_URL = 'https://www.traileraddict.com/ajax/film_popular.php'
@@ -17,6 +18,7 @@ TYPE_MAP = {
 def Start():
 
 	HTTP.CacheTime = CACHE_1WEEK
+	HTTP.Headers['User-Agent'] = 'Trailer Addict/%s (%s %s; Plex Media Server %s)' % (VERSION, Platform.OS, Platform.OSVersion, Platform.ServerVersion)
 
 	if not 'movies' in Dict:
 		Dict['movies'] = {}
