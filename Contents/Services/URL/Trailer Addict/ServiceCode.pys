@@ -1,3 +1,5 @@
+import unwise
+
 RE_FILES = Regex("file: *'([^']+)'")
 UNAVAILABLE_URL = 'https://tadata.me/imdb2ta/unavailable.mp4'
 
@@ -30,6 +32,7 @@ def PlayVideo(url, **kwargs):
 		raise Ex.MediaNotAvailable
 
 	data = HTTP.Request(video_url[0], cacheTime=0).content
+	data = unwise.unwise_process(data)
 	files = RE_FILES.findall(data)
 
 	if len(files) < 1:
