@@ -38,5 +38,4 @@ Create an [issue on Github](https://github.com/piplongrun/TrailerAddict.bundle/i
  - Primary agent and order of any secondary agents
  - Log files, `com.plexapp.agents.traileraddict.log`
 
--
 <img src="https://raw.githubusercontent.com/piplongrun/TrailerAddict.bundle/master/Contents/Resources/icon-default.jpg" width="150">
