@@ -1,7 +1,7 @@
 import unwise
 
 RE_FILES = Regex("file: *'([^']+)'")
-UNAVAILABLE_URL = 'https://tadata.me/imdb2ta/unavailable.mp4'
+UNAVAILABLE_URL = 'https://api.tadata.me/imdb2ta/v2/unavailable.mp4'
 
 ####################################################################################################
 def MediaObjectsForURL(url):
