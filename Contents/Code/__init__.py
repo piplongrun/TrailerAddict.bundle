@@ -1,5 +1,5 @@
-VERSION = '1.8'
-API_URL = 'https://tadata.me/imdb2ta/%s' # %s = imdb id
+VERSION = '2.0'
+API_URL = 'https://api.tadata.me/imdb2ta/v2/?imdb_id=%s' # %s = imdb id
 
 POST_URL = 'https://www.traileraddict.com/ajax/film_popular.php'
 POST_BODY = 'page=%d&filmid=%s' # %d = page, %s = Trailer Addict movie id
