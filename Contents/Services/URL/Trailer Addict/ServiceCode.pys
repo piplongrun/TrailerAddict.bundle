@@ -1,6 +1,6 @@
 import unwise
 
-RE_FILES = Regex("file: *'([^']+)'")
+RE_FILES = Regex('source src="([^"]+)"')
 UNAVAILABLE_URL = 'https://api.tadata.me/imdb2ta/v2/unavailable.mp4'
 
 ####################################################################################################
@@ -38,7 +38,7 @@ def PlayVideo(url, **kwargs):
 	if len(files) < 1:
 		Log('Regex failed...')
 		return None
-	elif not '.mp4' in files[-1]:
+	elif not '.mp4' in files[0]:
 		return Redirect(UNAVAILABLE_URL)
 	else:
-		return Redirect(files[-1])
+		return Redirect(files[0])
