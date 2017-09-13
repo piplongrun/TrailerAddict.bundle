@@ -24,14 +24,7 @@ def MediaObjectsForURL(url):
 def PlayVideo(url, **kwargs):
 
 	url = 'https://www.traileraddict.com/%s' % (url.split('://')[-1])
-
-	html = HTML.ElementFromURL(url, cacheTime=CACHE_1MONTH)
-	video_url = html.xpath('//meta[@name="twitter:player"]/@content')
-
-	if len(video_url) < 1:
-		raise Ex.MediaNotAvailable
-
-	data = HTTP.Request(video_url[0], cacheTime=0).content
+	data = HTTP.Request(url, cacheTime=0).content
 	data = unwise.unwise_process(data)
 	files = RE_FILES.findall(data)
 
