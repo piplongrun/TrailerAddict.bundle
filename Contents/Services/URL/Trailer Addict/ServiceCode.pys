@@ -23,7 +23,7 @@ def MediaObjectsForURL(url):
 ####################################################################################################
 def PlayVideo(url, **kwargs):
 
-	url = 'https://www.traileraddict.com/%s' % (url.split('://')[-1])
+	url = 'https://traileraddict.cache.tadata.me/%s' % (url.split('://')[-1])
 	data = HTTP.Request(url, cacheTime=0).content
 	data = unwise.unwise_process(data)
 	files = RE_FILES.findall(data)
