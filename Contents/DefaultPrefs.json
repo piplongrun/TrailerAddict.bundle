@@ -1,0 +1,38 @@
+[
+	{
+		"id": "add_trailers",
+		"label": "Add Trailers",
+		"type": "bool",
+		"default": "true"
+	},
+	{
+		"id": "add_feature_trailers",
+		"label": "Add Feature Trailers",
+		"type": "bool",
+		"default": "true"
+	},
+	{
+		"id": "add_theatrical_trailer",
+		"label": "Add Theatrical Trailers",
+		"type": "bool",
+		"default": "true"
+	},
+	{
+		"id": "add_featurettes",
+		"label": "Add Featurettes",
+		"type": "bool",
+		"default": "true"
+	},
+	{
+		"id": "add_interviews",
+		"label": "Add Interviews",
+		"type": "bool",
+		"default": "false"
+	},
+	{
+		"id": "add_deleted_scenes",
+		"label": "Add Deleted Scenes",
+		"type": "bool",
+		"default": "false"
+	}
+]

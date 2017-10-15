@@ -126,26 +126,26 @@ class TrailerAddictAgent(Agent.Movies):
 				url = video.get('href')
 
 				# Trailers
-				if title.lower() == 'trailer':
+				if title.lower() == 'trailer' and Prefs['add_trailers']:
 					extra_type = 'trailer'
-				elif title.lower() == 'feature trailer':
+				elif title.lower() == 'feature trailer' and Prefs['add_feature_trailers']:
 					extra_type = 'feature_trailer'
-				elif title.lower() == 'theatrical trailer':
+				elif title.lower() == 'theatrical trailer' and Prefs['add_theatrical_trailers']:
 					extra_type = 'theatrical_trailer'
 
 				# Behind the scenes / Featurette
-				elif 'behind the scenes' in title.lower() or 'featurette' in title.lower():
+				elif ('behind the scenes' in title.lower() or 'featurette' in title.lower()) and Prefs['add_featurettes']:
 					extra_type = 'behind_the_scenes'
 
 				# Interview
-				elif 'interview' in title.lower():
+				elif 'interview' in title.lower() and Prefs['add_interviews']:
 					extra_type = 'interview'
 
 					if title.lower().startswith('interview') or title.lower().startswith('generic interview'):
 						title = title.split('nterview - ')[-1].split('nterview- ')[-1]
 
 				# Deleted scene
-				elif 'deleted scene' in title.lower():
+				elif 'deleted scene' in title.lower() and Prefs['add_deleted_scenes']:
 					extra_type = 'deleted_scene'
 
 				else:
