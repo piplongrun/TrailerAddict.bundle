@@ -66,11 +66,11 @@ class TrailerAddictAgent(Agent.Movies):
 		try:
 			json_obj = JSON.ObjectFromURL(API_URL % (metadata.id), sleep=2.0)
 		except:
-			Log("*** Failed retrieving data from %s"  % (API_URL % (metadata.id)))
+			Log("*** Failed retrieving data from %s ***"  % (API_URL % (metadata.id)))
 			return None
 
 		if 'error' in json_obj:
-			Log('*** An error occurred: %s' % (json_obj['error']))
+			Log('*** An error occurred: %s ***' % (json_obj['error']))
 			return None
 
 		ta_movie_id = json_obj['ta_id']
