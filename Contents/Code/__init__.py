@@ -1,4 +1,4 @@
-VERSION = '2.3'
+VERSION = '2.4'
 API_URL = 'https://api.tadata.me/imdb2ta/v2/?imdb_id=%s' # %s = imdb id
 
 POST_URL = 'https://traileraddict.cache.tadata.me/ajax/film_popular.php'
@@ -20,7 +20,7 @@ def Start():
 	HTTP.CacheTime = CACHE_1WEEK
 	HTTP.Headers['User-Agent'] = 'Trailer Addict/%s (%s %s; Plex Media Server %s)' % (VERSION, Platform.OS, Platform.OSVersion, Platform.ServerVersion)
 
-	if not 'movies' in Dict:
+	if 'movies' in Dict:
 		Dict['movies'] = {}
 		Dict.Save()
 
@@ -56,56 +56,29 @@ class TrailerAddictAgent(Agent.Movies):
 				Log("*** Could not find IMDb id for movie with The Movie Database id: %s ***" % (media.primary_metadata.id))
 				return None
 
-		# If we already have the required Trailer Addict movie id
-		if imdb_id in Dict['movies']:
-
-			Log("*** We've already got a Trailer Addict id: %s ***" % (Dict['movies'][imdb_id]['ta_movie_id']))
-
-			results.Append(MetadataSearchResult(
-				id = imdb_id,
-				score = 100
-			))
-
-		# If not, lookup the Trailer Addict movie id
-		else:
-
-			try:
-				json_obj = JSON.ObjectFromURL(API_URL % (imdb_id), sleep=2.0)
-			except:
-				Log("*** Failed retrieving data from %s"  % (API_URL % (imdb_id)))
-				return None
-
-			if 'error' in json_obj:
-				Log('*** An error occurred: %s' % (json_obj['error']))
-				return None
-
-			ta_movie_id = json_obj['ta_id']
-
-			if not ta_movie_id:
-				return None
-
-			html = HTML.ElementFromURL(json_obj['url'])
-			poster = html.xpath('//meta[@property="og:image"]/@content')
-
-			if len(poster) < 1:
-				poster = None
-			else:
-				poster = 'https://%s' % (poster[0].split('//')[-1])
-
-			# Store the Trailer Addict movie id and poster
-			Dict['movies'][imdb_id] = {}
-			Dict['movies'][imdb_id]['ta_movie_id'] = ta_movie_id
-			Dict['movies'][imdb_id]['poster'] = poster
-			Dict.Save()
-
-			results.Append(MetadataSearchResult(
-				id = imdb_id,
-				score = 100
-			))
+		results.Append(MetadataSearchResult(
+			id = imdb_id,
+			score = 100
+		))
 
 	def update(self, metadata, media, lang):
 
-		ta_movie_id = Dict['movies'][metadata.id]['ta_movie_id']
+		try:
+			json_obj = JSON.ObjectFromURL(API_URL % (metadata.id), sleep=2.0)
+		except:
+			Log("*** Failed retrieving data from %s"  % (API_URL % (metadata.id)))
+			return None
+
+		if 'error' in json_obj:
+			Log('*** An error occurred: %s' % (json_obj['error']))
+			return None
+
+		ta_movie_id = json_obj['ta_id']
+
+		if not ta_movie_id:
+			return None
+
+		poster = json_obj['image'] if 'image' in json_obj else None
 		extras = []
 
 		for page in range(1,2):
@@ -113,6 +86,7 @@ class TrailerAddictAgent(Agent.Movies):
 			try:
 				page = HTTP.Request(POST_URL, data=POST_BODY % (page, ta_movie_id), sleep=2.0).content # Only HTTP.Request supports a POST body
 			except:
+				Log("*** POST request failed ***")
 				break
 
 			html = HTML.ElementFromString(page)
@@ -156,7 +130,7 @@ class TrailerAddictAgent(Agent.Movies):
 					'extra': TYPE_MAP[extra_type](
 						url = 'ta://%s' % (url.lstrip('/')),
 						title = title,
-						thumb = Dict['movies'][metadata.id]['poster']
+						thumb = poster
 					)
 				})
 
