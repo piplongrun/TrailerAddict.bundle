@@ -12,7 +12,7 @@
 		"default": "true"
 	},
 	{
-		"id": "add_theatrical_trailer",
+		"id": "add_theatrical_trailers",
 		"label": "Add Theatrical Trailers",
 		"type": "bool",
 		"default": "true"
