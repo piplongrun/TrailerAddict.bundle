@@ -1,4 +1,4 @@
-VERSION = '2.4'
+VERSION = '2.5'
 API_URL = 'https://api.tadata.me/imdb2ta/v2/?imdb_id=%s' # %s = imdb id
 
 POST_URL = 'https://traileraddict.cache.tadata.me/ajax/film_popular.php'
@@ -66,11 +66,11 @@ class TrailerAddictAgent(Agent.Movies):
 		try:
 			json_obj = JSON.ObjectFromURL(API_URL % (metadata.id), sleep=2.0)
 		except:
-			Log("*** Failed retrieving data from %s ***"  % (API_URL % (metadata.id)))
+			Log("*** Failed retrieving data from %s ***" % (API_URL % (metadata.id)))
 			return None
 
 		if 'error' in json_obj:
-			Log('*** An error occurred: %s ***' % (json_obj['error']))
+			Log("*** An error occurred: %s ***" % (json_obj['error']))
 			return None
 
 		ta_movie_id = json_obj['ta_id']
@@ -86,7 +86,7 @@ class TrailerAddictAgent(Agent.Movies):
 			try:
 				page = HTTP.Request(POST_URL, data=POST_BODY % (page, ta_movie_id), sleep=2.0).content # Only HTTP.Request supports a POST body
 			except:
-				Log("*** POST request failed ***")
+				Log("*** POST request failed; plugin version %s ***" % (VERSION))
 				break
 
 			html = HTML.ElementFromString(page)
