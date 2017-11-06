@@ -10,7 +10,7 @@ def MediaObjectsForURL(url):
 		MediaObject(
 			container = Container.MP4,
 			video_codec = VideoCodec.H264,
-			video_resolution = '720',
+			video_resolution = '1080',
 			audio_codec = AudioCodec.AAC,
 			audio_channels = 2,
 			optimized_for_streaming = True,
@@ -24,13 +24,37 @@ def MediaObjectsForURL(url):
 def PlayVideo(url, **kwargs):
 
 	url = 'https://traileraddict.cache.tadata.me/%s' % (url.split('://')[-1])
-	data = HTTP.Request(url, cacheTime=0).content
+
+	try:
+		html = HTML.ElementFromURL(url, cacheTime=CACHE_1HOUR)
+	except Ex.HTTPError, e:
+		if e.code == 403:
+			Log('403 Forbidden (Proxy Blocked)')
+		elif e.code == 404:
+			Log('404 Not Found')
+		else:
+			Log('HTTP Error: %s' % (e.code))
+		return Redirect(UNAVAILABLE_URL)
+	except:
+		Log('Opening URL in PlayVideo failed')
+		return Redirect(UNAVAILABLE_URL)
+
+	html = HTML.ElementFromURL(url, cacheTime=CACHE_1HOUR)
+	js = html.xpath('//script[contains(@src, "client.js")]/@src')
+
+	if len(js) < 1:
+		Log('Script tag not found')
+		return Redirect(UNAVAILABLE_URL)
+
+	js_url = 'https://www.traileraddict.com/util/%s' % (js[0].split('util/')[-1])
+
+	data = HTTP.Request(js_url, cacheTime=CACHE_1HOUR).content
 	data = unwise.unwise_process(data)
 	files = RE_FILES.findall(data)
 
 	if len(files) < 1:
-		Log('Regex failed...')
-		return None
+		Log('Regex failed')
+		return Redirect(UNAVAILABLE_URL)
 	elif not '.mp4' in files[0]:
 		return Redirect(UNAVAILABLE_URL)
 	else:
