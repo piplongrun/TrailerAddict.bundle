@@ -50,9 +50,10 @@ def PlayVideo(url, **kwargs):
 
 	if data:
 		data = HTTP.Request('https://piplong.run/api/jsunpack/', data=data).content
-		files = RE_FILES.findall(data)
 	else:
 		return Redirect(UNAVAILABLE_URL)
+
+	files = RE_FILES.findall(data)
 
 	if len(files) < 1:
 		Log('Regex failed')
