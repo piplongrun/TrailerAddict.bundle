@@ -79,6 +79,10 @@ class TrailerAddictAgent(Agent.Movies):
 		for video in html.xpath('//a[@class="m_title"]'):
 
 			title = video.text.strip()
+
+			if 'tv spot' in title.lower():
+				continue
+
 			url = video.get('href')
 
 			# Trailers
