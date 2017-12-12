@@ -39,3 +39,7 @@ Create an [issue on Github](https://github.com/piplongrun/TrailerAddict.bundle/i
  - Log files, `com.plexapp.agents.traileraddict.log`
 
 <img src="https://raw.githubusercontent.com/piplongrun/TrailerAddict.bundle/master/Contents/Resources/icon-default.jpg" width="150">
+
+If you like my work,... I like beer :)
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3PYFHYXLR77S4)
