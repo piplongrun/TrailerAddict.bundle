@@ -21,10 +21,20 @@ def MediaObjectsForURL(url):
 ####################################################################################################
 def PlayVideo(url, **kwargs):
 
-	url = 'https://www.traileraddict.com/%s' % (url.split('://')[-1])
+	if Prefs['api_key']:
+		url = 'https://traileraddict.cache.tadata.me/%s' % (url.split('://')[-1])
+		headers = {
+			"X-Api-Key": Prefs['api_key']
+		}
+	else:
+		url = 'https://www.traileraddict.com/%s' % (url.split('://')[-1])
+		headers = {
+			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
+			"Referer": "https://www.traileraddict.com/"
+		}
 
 	try:
-		html = HTML.ElementFromURL(url, cacheTime=0, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36", "Referer": "https://www.traileraddict.com/"})
+		html = HTML.ElementFromURL(url, cacheTime=CACHE_1HOUR, headers=headers)
 	except Ex.HTTPError, e:
 		if e.code == 403:
 			Log('403 Forbidden (IP Blocked)')
@@ -37,19 +47,9 @@ def PlayVideo(url, **kwargs):
 		Log('Opening URL in PlayVideo failed')
 		return Redirect(UNAVAILABLE_URL)
 
-	data = None
-	js = html.xpath('//script[contains(@src, "client.js")]/@src')
-
+	js = html.xpath('//script[contains(., "eval(function(w,i,s,e)")]/text()')
 	if len(js) > 0:
-		js_url = 'https://www.traileraddict.com/util/%s' % (js[0].split('util/')[-1])
-		data = HTTP.Request(js_url, cacheTime=0, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36", "Referer": url, "Cookie": "ccr=%s" % (Datetime.TimestampFromDatetime(Datetime.Now()))}).content
-	else:
-		js = html.xpath('//script[contains(., "eval(function(w,i,s,e)")]/text()')
-		if len(js) > 0:
-			data = js[0]
-
-	if data:
-		data = HTTP.Request('https://piplong.run/api/jsunpack/', data=data).content
+		data = HTTP.Request('https://piplong.run/api/jsunpack/', data=js[0]).content
 	else:
 		return Redirect(UNAVAILABLE_URL)
 
