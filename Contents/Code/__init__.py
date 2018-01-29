@@ -1,4 +1,4 @@
-VERSION = '2.10'
+VERSION = '2.11'
 API_URL = 'https://api.tadata.me/imdb2ta/v2/?imdb_id=%s'
 TAC_URL = 'https://traileraddict.cache.tadata.me/%s'
 
