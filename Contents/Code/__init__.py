@@ -1,22 +1,28 @@
-VERSION = '2.11'
+import certifi
+import requests
+
+VERSION = '3.0'
 API_URL = 'https://api.tadata.me/imdb2ta/v2/?imdb_id=%s'
 TAC_URL = 'https://traileraddict.cache.tadata.me/%s'
 
 TYPE_ORDER = ['trailer', 'feature_trailer', 'theatrical_trailer', 'behind_the_scenes', 'interview', 'deleted_scene']
 TYPE_MAP = {
-	'trailer': TrailerObject,
-	'feature_trailer': TrailerObject,
-	'theatrical_trailer': TrailerObject,
-	'behind_the_scenes': BehindTheScenesObject,
-	'interview': InterviewObject,
-	'deleted_scene': DeletedSceneObject
+	"trailer": TrailerObject,
+	"feature_trailer": TrailerObject,
+	"theatrical_trailer": TrailerObject,
+	"behind_the_scenes": BehindTheScenesObject,
+	"interview": InterviewObject,
+	"deleted_scene": DeletedSceneObject
+}
+
+HTTP_HEADERS = {
+	"User-Agent": "Trailer Addict/%s (%s %s; Plex Media Server %s)" % (VERSION, Platform.OS, Platform.OSVersion, Platform.ServerVersion)
 }
 
 ####################################################################################################
 def Start():
 
-	HTTP.CacheTime = CACHE_1WEEK
-	HTTP.Headers['User-Agent'] = 'Trailer Addict/%s (%s %s; Plex Media Server %s)' % (VERSION, Platform.OS, Platform.OSVersion, Platform.ServerVersion)
+	pass
 
 ####################################################################################################
 class TrailerAddictAgent(Agent.Movies):
@@ -57,24 +63,17 @@ class TrailerAddictAgent(Agent.Movies):
 
 	def update(self, metadata, media, lang):
 
-		try:
-			json_obj = JSON.ObjectFromURL(API_URL % (metadata.id))
-		except:
-			Log("*** Failed retrieving data from %s ***" % (API_URL % (metadata.id)))
+		r = requests.get(API_URL % (metadata.id), headers=HTTP_HEADERS, verify=certifi.where())
+
+		if 'error' in r.json():
+			Log("*** An error occurred: %s ***" % (r.json()['error']))
 			return None
 
-		if 'error' in json_obj:
-			Log("*** An error occurred: %s ***" % (json_obj['error']))
-			return None
-
-		poster = json_obj['image'] if 'image' in json_obj else None
+		poster = r.json()['image'] if 'image' in r.json() else None
 		extras = []
 
-		try:
-			html = HTML.ElementFromURL(TAC_URL % (json_obj['url'].split('/')[-1]), sleep=5.0)
-		except:
-			Log("*** HTTP GET request failed; plugin version %s ***" % (VERSION))
-			return None
+		r = requests.get(TAC_URL % (r.json()['url'].split('/')[-1]), headers=HTTP_HEADERS, verify=certifi.where())
+		html = HTML.ElementFromString(r.text)
 
 		for video in html.xpath('//a[@class="m_title"]'):
 

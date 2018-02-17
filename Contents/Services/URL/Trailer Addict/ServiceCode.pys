@@ -1,3 +1,6 @@
+import certifi
+import requests
+
 RE_FILES = Regex('source src="([^"]+)"')
 UNAVAILABLE_URL = 'https://api.tadata.me/imdb2ta/v2/unavailable.mp4'
 
@@ -24,6 +27,7 @@ def PlayVideo(url, **kwargs):
 	if Prefs['api_key']:
 		url = 'https://traileraddict.cache.tadata.me/%s' % (url.split('://')[-1])
 		headers = {
+			"User-Agent": "Trailer Addict URL Service",
 			"X-Api-Key": Prefs['api_key']
 		}
 	else:
@@ -33,27 +37,16 @@ def PlayVideo(url, **kwargs):
 			"Referer": "https://www.traileraddict.com/"
 		}
 
-	try:
-		html = HTML.ElementFromURL(url, cacheTime=CACHE_1HOUR, headers=headers)
-	except Ex.HTTPError, e:
-		if e.code == 403:
-			Log('403 Forbidden (IP Blocked)')
-		elif e.code == 404:
-			Log('404 Not Found')
-		else:
-			Log('HTTP Error: %s' % (e.code))
-		return Redirect(UNAVAILABLE_URL)
-	except:
-		Log('Opening URL in PlayVideo failed')
-		return Redirect(UNAVAILABLE_URL)
+	r = requests.get(url, headers=headers, verify=certifi.where())
+	html = HTML.ElementFromString(r.text)
 
 	js = html.xpath('//script[contains(., "eval(function(w,i,s,e)")]/text()')
 	if len(js) > 0:
-		data = HTTP.Request('https://piplong.run/api/jsunpack/', data=js[0]).content
+		r = requests.post('https://piplong.run/api/jsunpack/', data=js[0], verify=certifi.where())
 	else:
 		return Redirect(UNAVAILABLE_URL)
 
-	files = RE_FILES.findall(data)
+	files = RE_FILES.findall(r.text)
 
 	if len(files) < 1:
 		Log('Regex failed')
