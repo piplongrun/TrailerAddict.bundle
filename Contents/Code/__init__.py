@@ -1,7 +1,7 @@
 import certifi
 import requests
 
-VERSION = '3.0'
+VERSION = '3.1'
 API_URL = 'https://api.tadata.me/imdb2ta/v2/?imdb_id=%s'
 TAC_URL = 'https://traileraddict.cache.tadata.me/%s'
 
