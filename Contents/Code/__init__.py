@@ -85,7 +85,7 @@ class TrailerAddictAgent(Agent.Movies):
 			url = video.get('href')
 
 			# Trailers
-			if title.lower() in ['trailer', 'international trailer', 'trailer a', 'trailer b'] and Prefs['add_trailers']:
+			if title.lower() in ['trailer', 'international trailer', 'trailer a', 'trailer b', 'final trailer'] and Prefs['add_trailers']:
 				extra_type = 'trailer'
 			elif title.lower() == 'feature trailer' and Prefs['add_feature_trailers']:
 				extra_type = 'feature_trailer'
