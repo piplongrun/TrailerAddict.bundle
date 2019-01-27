@@ -1,3 +1,5 @@
+**This agent is no longer maintained and its backend APIs have been taken offline**
+
 Trailer Addict
 ==============
 <img src="https://img.shields.io/github/release/piplongrun/TrailerAddict.bundle.png?style=flat-square">
